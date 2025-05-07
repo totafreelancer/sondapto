@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ওয়ারিশ সনদপত্র জেনারেটর</title>
+    <style>
+        body {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            direction: ltr; /* LTR টেক্সট ডিরেকশন */
+            text-align: left; /* ডিফল্ট টেক্সট অ্যালাইনমেন্ট */
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        /* ইনপুট ফর্ম স্টাইল */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        label {
+            display: block;
+            margin: 10px 0;
+            text-align: left; /* লেবেল বাম থেকে অ্যালাইন */
+        }
+        
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: left; /* ইনপুট টেক্সট বাম থেকে অ্যালাইন */
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+        }
+        
+        .heirs-container {
+            margin: 20px 0;
+        }
+        
+        .heir-input-group {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+        }
+        
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            width: 100%;
+        }
+        
+        /* আউটপুট স্টাইল */
+        .output-container {
+            display: none;
+            background-color: #ddd;
+            opacity: 0.9;
+            padding: 20px;
+            margin-top: 20px;
+            direction: ltr; /* LTR টেক্সট ডিরেকশন */
+        }
+        
+        .output-actions {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+        }
+        
+        .print-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .edit-btn {
+            background-color: #FF9800;
+            color: white;
+        }
+        
+        /* ওয়ারিশ নম্বর টেবিল স্টাইল */
+        .certificate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            direction: ltr;
+        }
+        
+        .certificate-table td, 
+        .certificate-table th {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+        }
+        
+        .certificate-table .digit-cell {
+            width: 30px;
+        }
+        
+        /* টেবিলে বাংলা টেক্সটের জন্য স্পেসিফিক স্টাইল */
+        .bangla-text {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            text-align: left;
+        }
+        
+        @media print {
+            .form-container, .output-actions {
+                display: none;
+            }
+            .output-container {
+                display: block !important;
+                opacity: 1;
+                background-color: transparent;
+            }
+        }
+        
+        /* বাংলা ফন্ট স্টাইল */
+        @font-face {
+            font-family: 'SolaimanLipi';
+            src: url('https://fonts.maateen.me/solaiman-lipi/font.css');
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ইনপুট ফর্ম সেকশন -->
+        <div id="inputSection" class="form-container">
+            <h1 class="bangla-text">ওয়ারিশ সনদপত্র তথ্য</h1>
+            <form id="updateForm">
+                <div class="form-section">
+                    <h2 class="bangla-text">ব্যক্তিগত তথ্য</h2>
+                    <label class="bangla-text">নাম: <input type="text" name="name" required></label>
+                    <label class="bangla-text">পিতার নাম: <input type="text" name="pita" required></label>
+                    <label class="bangla-text">মাতার নাম: <input type="text" name="mata" required></label>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="bangla-text">বর্তমান ঠিকানা</h2>
+                    <label class="bangla-text">গ্রাম/মহল্লা: <input type="text" name="b_gram" required></label>
+                    <label class="bangla-text">ডাকঘর: <input type="text" name="b_dak" required></label>
+                    <label class="bangla-text">থানা: <input type="text" name="b_thana" required></label>
+                    <label class="bangla-text">জেলা: <input type="text" name="b_jela" required></label>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="bangla-text">স্থায়ী ঠিকানা</h2>
+                    <label class="bangla-text">গ্রাম/মহল্লা: <input type="text" name="s_gram"></label>
+                    <label class="bangla-text">ডাকঘর: <input type="text" name="s_dak"></label>
+                    <label class="bangla-text">থানা: <input type="text" name="s_thana"></label>
+                    <label class="bangla-text">জেলা: <input type="text" name="s_jala"></label>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="bangla-text">অন্যান্য তথ্য</h2>
+                    <label class="bangla-text">ওয়ার্ড নম্বর: <input type="tel" id="ordInput" name="ord" pattern="[০-৯]*"></label>
+                    <label class="bangla-text">জাতীয় আইডি নম্বর: <input type="tel" id="nidInput" name="nid" pattern="[০-৯]*"></label>
+                    <label class="bangla-text">উত্তরাধিকারীর সংখ্যা: 
+                        <input type="tel" id="heirCount" name="songkha" pattern="[০-৯]*" required>
+                    </label>
+                </div>
+                
+                <div id="heirInputsContainer" class="heirs-container"></div>
+                
+                <div class="form-section">
+                    <h2 class="bangla-text">ওয়ারিশ সনদ নম্বর</h2>
+                    <label class="bangla-text">১৭ সংখ্যার নম্বর: 
+                        <input type="tel" id="warishNumberInput" name="warishNumber" maxlength="17" 
+                               pattern="[০-৯]{17}" required placeholder="২০২৪২৬১৩৮৬৯০০৩৮৯১">
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn bangla-text">সনদ তৈরি করুন</button>
+            </form>
+        </div>
+
+        <!-- আউটপুট সেকশন -->
+        <div id="outputSection" class="output-container">
+            <table height="120px" border="0px" style="width:100%;margin:0px auto;" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <tr>
+                        <td style="width:1.5in; text-align:center;"><img src="logo.png" height="80px" width="80px"></td>
+                        <td style="text-align:center;height:60px;">
+                            <span style="font-size:21px;letter-spacing:2px; font-weight:bold; color:blue; width:5.5in;" class="bangla-text">
+                                শুভাঢ্যা ইউনিয়ন পরিষদ</span> <br>
+                            <span style="font-size:12px; font-weight:bold;" class="bangla-text">শুভাঢ্যা <br>
+                                ডাকঘর: শুভাঢ্যা, উপজেলা: কেরানীগঞ্জ, জেলা: ঢাকা-১৩১০ <br>
+                                ফোন: ০১৭১৬০৮০০৫১</span>
+                        </td>
+                        <td style="width:1.5in;"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table align="center" style="height:42px; border:1px; margin-top:5px; margin-bottom:15px;">
+                <tbody>
+                    <tr>
+                        <td style="padding-top:5px;">
+                            <span style="font-weight:bold; font-size:18px;" class="bangla-text"><u>ওয়ারিশ সনদপত্র</u></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="certificate-table">
+                <tbody id="warishNumberRow">
+                    <!-- JavaScript দিয়ে এখানে কন্টেন্ট যোগ হবে -->
+                </tbody>
+            </table>
+            
+            <table border="0" style="height:300px; width:100%; padding-left:5px;" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td colspan="4" align="left" style="font-size:18px;text-indent:50px; padding-top:5px;" class="bangla-text">এই মর্মে প্রত্যয়ণ করা যাইতেছে যে,</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:18px; text-align:left;" class="bangla-text">নাম</td>
+                        <td>
+                            <span id="name" style="font-size:18px; font-weight:bold;" class="bangla-text">: </span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:18px; text-align:left;" class="bangla-text">পিতার নাম</td>
+                        <td>
+                            <span id="pita" style="font-size:18px; font-weight:bold;" class="bangla-text">: </span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:18px; text-align:left;" class="bangla-text">মাতার নাম</td>
+                        <td>
+                            <span id="mata" style="font-size:18px; font-weight:bold;" class="bangla-text">: </span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="width:45%; padding-top:15px;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p style="text-align:center;text-decoration:underline;font-size:18px;font-weight:bold;" class="bangla-text">
+                                                বর্তমান ঠিকানা</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:148px;text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">গ্রাম/মহল্লা</td>
+                                        <td>
+                                            <span id="b_gram" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:158px;text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">ডাকঘর</td>
+                                        <td>
+                                            <span id="b_dak" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:158px;text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">থানা</td>
+                                        <td>
+                                            <span id="b_thana" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:158px;text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">জেলা</td>
+                                        <td>
+                                            <span id="b_jela" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td colspan="2" style="width:55%;padding-top:15px;">
+                            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p style="text-align:center; text-decoration:underline;font-size:18px;font-weight:bold;" class="bangla-text">
+                                                স্থায়ী ঠিকানা</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:100px;text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">গ্রাম/মহল্লা</td>
+                                        <td>
+                                            <span id="s_gram" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">ডাকঘর</td>
+                                        <td>
+                                            <span id="s_dak" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">থানা</td>
+                                        <td>
+                                            <span id="s_thana" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:left; padding-right:10px; font-size:20px;" class="bangla-text">জেলা</td>
+                                        <td>
+                                            <span id="s_jala" style="font-size:18px;" class="bangla-text">: </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:18px; text-align:left;" class="bangla-text">ওয়ার্ড নম্বর</td>
+                        <td>
+                            <span id="ord" style="font-size:18px; font-weight:bold;" class="bangla-text">: </span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:18px; text-align:left;" class="bangla-text">জাতীয় আইডি নম্বর</td>
+                        <td>
+                            <span id="nid" style="font-size:18px; font-weight:bold;" class="bangla-text">: </span>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <span style="font-size:18px; padding-left:20px;" class="bangla-text">অত্র ইউনিয়নের অধিবাসী ছিলেন। মৃত্যুকালে তিনি নিম্নলিখিত ওয়ারিশগণকে রাখিয়া মৃত্যু বরণ করেন।</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table cellpadding="0" cellspacing="0" style="min-height:100px; width:95%; margin-top:12px;font-size:14px;" border="1">
+                <tr>
+                    <th style="width:5%;text-align:center;" class="bangla-text">নং</th>
+                    <th style="width:60%;" class="bangla-text">নাম</th>
+                    <th style="width:19%;text-align:center;" class="bangla-text">সম্পর্ক</th>
+                    <th style="width:14%;text-align:center;" class="bangla-text">বয়স</th>
+                </tr>
+                <tbody id="heirBody">
+                    <tr>
+                        <td></td>
+                        <td colspan="3" style="text-align:right;padding-right:100px;" class="bangla-text">উত্তরাধিকারীর সংখ্যা <span id="songkha">&nbsp;&nbsp;০&nbsp;&nbsp;</span>&nbsp;&nbsp;জন</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="output-actions">
+                <button id="printBtn" class="action-btn print-btn bangla-text">প্রিন্ট করুন</button>
+                <button id="editBtn" class="action-btn edit-btn bangla-text">আবার এডিট করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // বাংলা এবং ইংরেজি সংখ্যার ম্যাপিং
+        const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+        const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+        // ইংরেজি সংখ্যাকে বাংলায় রূপান্তর
+        function englishToBangla(numStr) {
+            if (!numStr) return '';
+            return numStr.toString().replace(/\d/g, d => banglaDigits[d]);
+        }
+
+        // বাংলা সংখ্যাকে ইংরেজিতে রূপান্তর
+        function banglaToEnglish(numStr) {
+            if (!numStr) return '';
+            return numStr.toString().replace(/[০-৯]/g, d => englishDigits[banglaDigits.indexOf(d)]);
+        }
+
+        // DOM এলিমেন্ট সিলেক্টর
+        const inputSection = document.getElementById('inputSection');
+        const outputSection = document.getElementById('outputSection');
+        const updateForm = document.getElementById('updateForm');
+        const heirCountInput = document.getElementById('heirCount');
+        const heirContainer = document.getElementById('heirInputsContainer');
+        const printBtn = document.getElementById('printBtn');
+        const editBtn = document.getElementById('editBtn');
+        const warishNumberInput = document.getElementById('warishNumberInput');
+        const ordInput = document.getElementById('ordInput');
+        const nidInput = document.getElementById('nidInput');
+
+        // সংখ্যা ইনপুট ফিল্ডে বাংলা সংখ্যা ব্যবহার
+        function setupBanglaNumberInput(inputElement) {
+            inputElement.addEventListener('input', function(e) {
+                const cursorPosition = e.target.selectionStart;
+                const englishNum = banglaToEnglish(e.target.value);
+                const banglaNum = englishToBangla(englishNum);
+                e.target.value = banglaNum;
+                e.target.setSelectionRange(cursorPosition, cursorPosition);
+            });
+        }
+
+        // সকল সংখ্যা ইনপুট ফিল্ড সেটআপ
+        setupBanglaNumberInput(warishNumberInput);
+        setupBanglaNumberInput(ordInput);
+        setupBanglaNumberInput(nidInput);
+        setupBanglaNumberInput(heirCountInput);
+
+        // ওয়ারিশ সংখ্যা পরিবর্তনে ডায়নামিক ফিল্ড তৈরি
+        heirCountInput.addEventListener('input', function(e) {
+            const count = parseInt(banglaToEnglish(e.target.value)) || 0;
+            heirContainer.innerHTML = '';
+
+            for (let i = 1; i <= count; i++) {
+                heirContainer.innerHTML += `
+                    <div class="heir-input-group">
+                        <h4 class="bangla-text">ওয়ারিশ ${englishToBangla(i)}</h4>
+                        <label class="bangla-text">নাম: <input type="text" name="heir_name_${i}" required></label>
+                        <label class="bangla-text">সম্পর্ক: <input type="text" name="heir_relation_${i}" required></label>
+                        <label class="bangla-text">বয়স: <input type="tel" name="heir_age_${i}" pattern="[০-৯]*" required></label>
+                    </div>
+                `;
+                
+                // নতুন তৈরি হওয়া বয়স ফিল্ডেও বাংলা সংখ্যা সাপোর্ট যোগ
+                const ageInput = document.querySelector(`input[name="heir_age_${i}"]`);
+                if (ageInput) {
+                    setupBanglaNumberInput(ageInput);
+                }
+            }
+        });
+
+        // ফর্ম সাবমিট হ্যান্ডলার
+        updateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(updateForm);
+            
+            // সাধারণ ফিল্ড আপডেট
+            formData.forEach((value, key) => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = `: ${value}`;
+                    if (key === 'songkha') {
+                        document.getElementById('songkha').innerHTML = 
+                            `&nbsp;&nbsp;${value}&nbsp;&nbsp;`;
+                    }
+                }
+            });
+
+            // ওয়ারিশ নম্বর আপডেট (একটি লাইনে সম্পূর্ণ)
+            const warishNumber = formData.get('warishNumber');
+            if (warishNumber) {
+                const row = document.getElementById("warishNumberRow");
+                row.innerHTML = `
+                    <tr>
+                        <td style="width:200px; text-align:center; font-size:15px; font-weight:bold;" class="bangla-text">ওয়ারিশ সনদ নং :</td>
+                        ${Array.from(warishNumber).map(digit => 
+                            `<td class="digit-cell" style="text-align:center; font-weight:bold; font-size:15px;">${digit}</td>`
+                        ).join('')}
+                    </tr>
+                `;
+            }
+
+            // ওয়ারিশ তালিকা আপডেট
+            const heirBody = document.getElementById("heirBody");
+            const heirCount = parseInt(banglaToEnglish(formData.get('songkha'))) || 0;
+            
+            // শুধুমাত্র হেডার এবং ফুটার রাখা
+            const rows = heirBody.querySelectorAll("tr");
+            for (let i = 1; i < rows.length - 1; i++) {
+                rows[i].remove();
+            }
+
+            // নতুন ওয়ারিশ যোগ
+            for (let i = 1; i <= heirCount; i++) {
+                const name = formData.get(`heir_name_${i}`);
+                const relation = formData.get(`heir_relation_${i}`);
+                const age = formData.get(`heir_age_${i}`);
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td style="text-align:center;" class="bangla-text">${englishToBangla(i)}</td>
+                    <td class="bangla-text">${name}</td>
+                    <td style="text-align:center;" class="bangla-text">${relation}</td>
+                    <td style="text-align:center;" class="bangla-text">${age}</td>
+                `;
+                heirBody.insertBefore(row, heirBody.lastElementChild);
+            }
+
+            // আউটপুট সেকশন দেখানো
+            inputSection.style.display = 'none';
+            outputSection.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+
+        // প্রিন্ট বাটন ইভেন্ট
+        printBtn.addEventListener('click', function() {
+            window.print();
+        });
+
+        // এডিট বাটন ইভেন্ট
+        editBtn.addEventListener('click', function() {
+            outputSection.style.display = 'none';
+            inputSection.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>
